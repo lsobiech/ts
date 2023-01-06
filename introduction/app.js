@@ -140,13 +140,36 @@ var ProjectItem = /** @class */ (function (_super) {
         _this.renderContent();
         return _this;
     }
-    ProjectItem.prototype.configure = function () { };
+    Object.defineProperty(ProjectItem.prototype, "persons", {
+        get: function () {
+            if (this.project.people === 1) {
+                return "1 person";
+            }
+            else {
+                return "".concat(this.project.people, " persons");
+            }
+        },
+        enumerable: false,
+        configurable: true
+    });
+    ProjectItem.prototype.dragStartHandler = function (event) {
+        console.log("event start", event);
+    };
+    ProjectItem.prototype.dragEndHandler = function (event) {
+        console.log("event end", event);
+    };
+    ProjectItem.prototype.configure = function () {
+        this.element.addEventListener("dragstart", this.dragStartHandler);
+        this.element.addEventListener("dragend", this.dragEndHandler);
+    };
     ProjectItem.prototype.renderContent = function () {
         this.element.querySelector("h2").textContent = this.project.title;
-        this.element.querySelector("h3").textContent =
-            this.project.people.toString();
+        this.element.querySelector("h3").textContent = this.persons + " assigned";
         this.element.querySelector("p").textContent = this.project.description;
     };
+    __decorate([
+        autobind
+    ], ProjectItem.prototype, "dragStartHandler");
     return ProjectItem;
 }(Component));
 // ProjectList Class
@@ -179,7 +202,7 @@ var ProjectList = /** @class */ (function () {
         for (var _i = 0, _a = this.assignedProjects; _i < _a.length; _i++) {
             var prjItem = _a[_i];
             console.log("prj", prjItem);
-            new ProjectItem(this.element.id, prjItem);
+            new ProjectItem(this.element.querySelector("ul").id, prjItem);
             // const listItem = document.createElement("li");
             // listItem.textContent = prjItem.title;
             // listEl?.appendChild(listItem);
